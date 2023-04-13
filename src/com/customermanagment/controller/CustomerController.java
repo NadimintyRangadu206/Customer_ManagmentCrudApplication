@@ -20,6 +20,7 @@ import com.customermanagment.request.CustomerRequest;
 
 @WebServlet("/")
 public class CustomerController extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -28,16 +29,20 @@ public class CustomerController extends HttpServlet {
 		String path = request.getServletPath();
 
 		switch (path) {
-		
+		case "/page":
+
+			getPage(request, response);
+			break;
+
 		case "/adminlogin":
 			getAdminLogin(request, response);
 			break;
-		
+
 		case "/deleteform":
-			
-			deleteCustomer(request,response);
+
+			deleteCustomer(request, response);
 			break;
-		
+
 		case "/edit":
 			updateCustomer(request, response);
 
@@ -55,54 +60,66 @@ public class CustomerController extends HttpServlet {
 			break;
 
 		case "/table":
-			getCustomerListPage(request,response);
+			getCustomerListPage(request, response);
 			break;
-			default:
-				getStartUpPage(request,response);
+		default:
+			getStartUpPage(request, response);
 			break;
-			
+
 		}
+	}
+
+	private void getPage(HttpServletRequest request, HttpServletResponse response) {
+
 	}
 
 	private void getCustomerListPage(HttpServletRequest request, HttpServletResponse response) {
 		
-
-	List<CustomerInfo> aci = CustomerDAO.getAllCustomers();
-	RequestDispatcher rd=request.getRequestDispatcher("customer_list.jsp");
-	
-	try {
-		request.setAttribute("CustomerDetails", aci);
-		rd.forward(request, response);
-	} catch (ServletException | IOException e) {
+		int pageNo = Integer.parseInt(request.getParameter("pageNo"));
 		
-		e.printStackTrace();
-	}
+		int limit=1;
+
+		List<CustomerInfo> listOfCustomer = CustomerDAO.getAllCustomers(limit,pageNo);
+
+		RequestDispatcher rd = request.getRequestDispatcher("customer_list.jsp");
+
+		try {
+			
+			request.setAttribute("PageNo", pageNo);
+			
+			request.setAttribute("CustomerDetails", listOfCustomer);
+			
+			rd.forward(request, response);
+
+		} catch (ServletException | IOException e) {
+
+			e.printStackTrace();
+		}
 	}
 
 	private void getAdminLogin(HttpServletRequest request, HttpServletResponse response) {
-	
-		String userName=request.getParameter("username");
-		String password=request.getParameter("password");
-		
-		boolean b=AdminDAO.getAdminLogin(userName, password);
-		
-		if(b==true) {
-			getCustomerListPage(request,response);
-		}else {
+
+		String userName = request.getParameter("username");
+		String password = request.getParameter("password");
+
+		boolean b = AdminDAO.getAdminLogin(userName, password);
+
+		if (b == true) {
+			getCustomerListPage(request, response);
+		} else {
 			throw new CustomerException(400, "Email && password does't match");
 		}
-		
-	}
 
+	}
 
 	private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) {
 
-		int sNo=Integer.parseInt(request.getParameter("sno"));
-		
+		int sNo = Integer.parseInt(request.getParameter("sno"));
+
 		try {
 			CustomerDAO.deleteCustomer(sNo);
 
-			getCustomerListPage(request,response);
+			getCustomerListPage(request, response);
 
 			RequestDispatcher rd = request.getRequestDispatcher("customer_list.jsp");
 
@@ -111,13 +128,12 @@ public class CustomerController extends HttpServlet {
 		} catch (Exception e) {
 			e.getLocalizedMessage();
 		}
-                                             
+
 	}
 
-
 	private void updateCustomer(HttpServletRequest request, HttpServletResponse response) {
-		
-		int sNo=Integer.parseInt(request.getParameter("sno"));
+
+		int sNo = Integer.parseInt(request.getParameter("sno"));
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String sex = request.getParameter("gender");
@@ -130,20 +146,20 @@ public class CustomerController extends HttpServlet {
 		int areaCode = Integer.parseInt(request.getParameter("areaCode"));
 		String mobileNo = request.getParameter("mobileNo");
 		String email = request.getParameter("email");
-		
-		CustomerInfo cI = new CustomerInfo(sNo,firstName, lastName, sex, dob, permanentAddress, residenceAddress,
+
+		CustomerInfo cI = new CustomerInfo(sNo, firstName, lastName, sex, dob, permanentAddress, residenceAddress,
 				state, city, zipCode, areaCode, mobileNo, email);
-		
+
 		try {
-		CustomerDAO.updateCustomer(cI);
-		
-		getCustomerListPage(request,response);
-		
-		RequestDispatcher rd=request.getRequestDispatcher("customer_list.jsp");
-		
-		rd.forward(request, response);
-		
-		}catch (Exception e) {
+			CustomerDAO.updateCustomer(cI);
+
+			getCustomerListPage(request, response);
+
+			RequestDispatcher rd = request.getRequestDispatcher("customer_list.jsp");
+
+			rd.forward(request, response);
+
+		} catch (Exception e) {
 			e.getLocalizedMessage();
 		}
 	}
@@ -153,22 +169,19 @@ public class CustomerController extends HttpServlet {
 		int sNo = Integer.parseInt(request.getParameter("sno"));
 
 		CustomerInfo c = CustomerDAO.editCustomer(sNo);
-		
-		
-		
+
 		try {
-			
-			RequestDispatcher rd=request.getRequestDispatcher("addcustomer_form.jsp");
-			
+
+			RequestDispatcher rd = request.getRequestDispatcher("addcustomer_form.jsp");
+
 			request.setAttribute("customer", c);
-			
+
 			rd.forward(request, response);
-			
+
 		} catch (ServletException | IOException e) {
-			
+
 			e.printStackTrace();
 		}
-		
 
 	}
 
@@ -205,9 +218,8 @@ public class CustomerController extends HttpServlet {
 
 		CustomerDAO.saveCustomerInfo(cr);
 
-		getCustomerListPage(request,response);
+		getCustomerListPage(request, response);
 
-		
 		RequestDispatcher rd = request.getRequestDispatcher("customer_list.jsp");
 
 		try {
@@ -222,12 +234,9 @@ public class CustomerController extends HttpServlet {
 
 	private void getStartUpPage(HttpServletRequest request, HttpServletResponse response) {
 
-		
-
 		RequestDispatcher rd = request.getRequestDispatcher("admin_login.jsp");
 
 		try {
-		
 
 			rd.forward(request, response);
 

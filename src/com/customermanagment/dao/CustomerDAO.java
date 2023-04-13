@@ -32,16 +32,12 @@ public class CustomerDAO {
 
 	private static final String CustomerEditQuery = "select * from CustomerInfo where SNo=?";
 
-	private static final String updateCustomerQuery="update customerInfo set"
-			+ " FirstName=?,LastName=?,Sex=?,DOB=?,"
+	private static final String updateCustomerQuery = "update customerInfo set" + " FirstName=?,LastName=?,Sex=?,DOB=?,"
 			+ "PermanentAddress=?,ResidenceAddress=?,State=?,City=?,"
 			+ "ZipCode=?,AreaCode=?,MobileNo=?,Email=? where SNo=?";
-	
-	
-	private static final String deleteCustomerQuery="delete  from customerInfo where SNo=?";
-	
-	
-	
+
+	private static final String deleteCustomerQuery = "delete  from customerInfo where SNo=?";
+
 	public static Connection getDbConnection() {
 
 		try {
@@ -56,67 +52,21 @@ public class CustomerDAO {
 		return conn;
 	}
 
-	
-public static void deleteCustomer(int sNo) {
-	
-	conn=getDbConnection();
-	
-	try {
-		ps=conn.prepareStatement(deleteCustomerQuery);
-		
-		ps.setInt(1, sNo);
-		ps.executeUpdate();
-	} catch (SQLException e) {
-	
-		e.printStackTrace();
-	}
-	
-	finally {
+	public static void deleteCustomer(int sNo) {
 
-		if (ps != null) {
-			try {
-				ps.close();
-			} catch (Exception e) {
-				throw new CustomerException(1, e.getMessage());
-			}
-		}
-		if (conn != null) {
-			try {
-				conn.close();
-			} catch (Exception e) {
-				throw new CustomerException(1, e.getMessage());
-			}
-		}
-	}
-}
-	
-	
-	public static void updateCustomer(CustomerInfo c) {
-		
-		conn=getDbConnection();
-	
+		conn = getDbConnection();
+
 		try {
-			ps=conn.prepareStatement(updateCustomerQuery);
-			
-			ps.setString(1, c.getFirstName());
-			ps.setString(2, c.getLastName());
-			ps.setString(3, c.getSex());
-			ps.setDate(4, c.getDOB());
-			ps.setString(5, c.getPermanentAddress());
-			ps.setString(6, c.getResidenceAddress());
-			ps.setString(7, c.getState());
-			ps.setString(8, c.getCity());
-			ps.setInt(9, c.getZipCode());
-			ps.setInt(10, c.getAreaCode());
-			ps.setString(11, c.getMobileNo());
-			ps.setString(12, c.getEmail());
-			ps.setInt(13, c.getsNo());
-			
+			ps = conn.prepareStatement(deleteCustomerQuery);
+
+			ps.setInt(1, sNo);
 			ps.executeUpdate();
-			
-		}catch (Exception e) {
-			e.getLocalizedMessage();
-		}finally {
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+
+		finally {
 
 			if (ps != null) {
 				try {
@@ -134,10 +84,54 @@ public static void deleteCustomer(int sNo) {
 			}
 		}
 	}
-	
+
+	public static void updateCustomer(CustomerInfo c) {
+
+		conn = getDbConnection();
+
+		try {
+			ps = conn.prepareStatement(updateCustomerQuery);
+
+			ps.setString(1, c.getFirstName());
+			ps.setString(2, c.getLastName());
+			ps.setString(3, c.getSex());
+			ps.setDate(4, c.getDOB());
+			ps.setString(5, c.getPermanentAddress());
+			ps.setString(6, c.getResidenceAddress());
+			ps.setString(7, c.getState());
+			ps.setString(8, c.getCity());
+			ps.setInt(9, c.getZipCode());
+			ps.setInt(10, c.getAreaCode());
+			ps.setString(11, c.getMobileNo());
+			ps.setString(12, c.getEmail());
+			ps.setInt(13, c.getsNo());
+
+			ps.executeUpdate();
+
+		} catch (Exception e) {
+			e.getLocalizedMessage();
+		} finally {
+
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					throw new CustomerException(1, e.getMessage());
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (Exception e) {
+					throw new CustomerException(1, e.getMessage());
+				}
+			}
+		}
+	}
+
 	public static CustomerInfo editCustomer(int sNo) {
 
-		 CustomerInfo customer=null;
+		CustomerInfo customer = null;
 		conn = getDbConnection();
 
 		try {
@@ -194,7 +188,6 @@ public static void deleteCustomer(int sNo) {
 
 	}
 
-	
 	public static void saveCustomerInfo(CustomerRequest request) {
 
 		conn = getDbConnection();
@@ -239,14 +232,13 @@ public static void deleteCustomer(int sNo) {
 		}
 	}
 
-	
-	public static List<CustomerInfo> getAllCustomers() {
+	public static List<CustomerInfo> getAllCustomers(int limit,int pageNo) {
 
 		conn = getDbConnection();
 
-		List<CustomerInfo> ci = new ArrayList<CustomerInfo>();
+		List<CustomerInfo> listOfCustomers = new ArrayList<CustomerInfo>();
 		try {
-			ps = conn.prepareStatement(customerListQuery);
+			ps = conn.prepareStatement(customerListQuery+"limit" +" "+limit +" "+"offset"+" "+pageNo);
 
 			rs = ps.executeQuery();
 
@@ -266,10 +258,10 @@ public static void deleteCustomer(int sNo) {
 				String mobileNo = rs.getString(12);
 				String email = rs.getString(13);
 
-				CustomerInfo info = new CustomerInfo(sNo, firstName, lastName, sex, dob, permanentAddress,
+				CustomerInfo cinfo = new CustomerInfo(sNo, firstName, lastName, sex, dob, permanentAddress,
 						residenceAddress, state, city, zipCode, areaCode, mobileNo, email);
 
-				ci.add(info);
+				listOfCustomers.add(cinfo);
 			}
 
 		} catch (Exception e) {
@@ -299,7 +291,9 @@ public static void deleteCustomer(int sNo) {
 			}
 		}
 
-		return ci;
+		return listOfCustomers;
 	}
+
+
 
 }

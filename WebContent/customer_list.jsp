@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Customer List </title>
+<title>Customer List</title>
 
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -23,7 +23,7 @@
 
 </head>
 <body>
-<a></a>
+	<a></a>
 	<header style="color: white">
 
 		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -37,31 +37,30 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-						<li class="nav-item">
-						<a class="nav-link active"
+						<li class="nav-item"><a class="nav-link active"
 							aria-current="page" href="table">Customer</a></li>
-					</ul>					
+					</ul>
 				</div>
 			</div>
-			
-			
+
+
 		</nav>
 
 
 
 	</header>
-</br>
-</br>
+	</br>
+	</br>
 	<div class="container">
 
 		<h2 align="center">Customer List</h2>
-		<hr >
+		<hr>
 		<form action="addcustomer" method="post">
-			<button type="submit" class="btn btn-primary"> Add Customer</button>
+			<button type="submit" class="btn btn-success">Add Customer</button>
 		</form>
 
 		<table class="table table-bordered border-primary table caption-top">
-		<caption>List of users</caption>
+			<caption>List of users</caption>
 			<thead>
 				<tr>
 					<th scope="col">SNo</th>
@@ -82,47 +81,54 @@
 			</thead>
 			<tbody>
 
-				<c:forEach var="ci" items="${CustomerDetails}">
+				<c:forEach var="customer" items="${CustomerDetails}">
 					<tr class="table-active">
-						<td><c:out value="${ci.sNo}"></c:out></td>
-						<td><c:out value="${ci.firstName}"></c:out></td>
-						<td><c:out value="${ci.lastName}"></c:out></td>
-						<td><c:out value="${ci.sex}"></c:out></td>
-						<td><c:out value="${ci.DOB}"></c:out></td>
-						<td><c:out value="${ci.permanentAddress}"></c:out></td>
-						<td><c:out value="${ci.residenceAddress}"></c:out></td>
-						<td><c:out value="${ci.state}"></c:out></td>
-						<td><c:out value="${ci.city}"></c:out></td>
-						<td><c:out value="${ci.zipCode}"></c:out></td>
-						<td><c:out value="${ci.areaCode}"></c:out></td>
-						<td><c:out value="${ci.mobileNo}"></c:out></td>
-						<td><c:out value="${ci.email}"></c:out></td>
-						
-						
+						<td><c:out value="${customer.sNo}"></c:out></td>
+						<td><c:out value="${customer.firstName}"></c:out></td>
+						<td><c:out value="${customer.lastName}"></c:out></td>
+						<td><c:out value="${customer.sex}"></c:out></td>
+						<td><c:out value="${customer.DOB}"></c:out></td>
+						<td><c:out value="${customer.permanentAddress}"></c:out></td>
+						<td><c:out value="${customer.residenceAddress}"></c:out></td>
+						<td><c:out value="${customer.state}"></c:out></td>
+						<td><c:out value="${customer.city}"></c:out></td>
+						<td><c:out value="${customer.zipCode}"></c:out></td>
+						<td><c:out value="${customer.areaCode}"></c:out></td>
+						<td><c:out value="${customer.mobileNo}"></c:out></td>
+						<td><c:out value="${customer.email}"></c:out></td>
+
+
 						<!--Query String  -->
-						<td><a href="editform?sno=<c:out value="${ci.sNo}"></c:out>">Edit</a>&nbsp;&nbsp;<a href="deleteform?sno=<c:out value="${ci.sNo }"></c:out>">Delete</a></td>
+						<td><a
+							href="editform?sno=<c:out value="${customer.sNo}"></c:out>">Edit</a>&nbsp;&nbsp;<a
+							href="deleteform?sno=<c:out value="${customer.sNo }"></c:out>">Delete</a></td>
 
 					</tr>
 
 				</c:forEach>
-				
-				
+
+
 			</tbody>
+
 		</table>
+
 		<nav aria-label="Page navigation example">
 			<ul class="pagination">
-				<li class="page-item"><a class="page-link" href="#"
-					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-				</a></li>
-				<li class="page-item"><a class="page-link" href="#">1</a></li>
-				<li class="page-item"><a class="page-link" href="#">2</a></li>
-				<li class="page-item"><a class="page-link" href="#">3</a></li>
-				<li class="page-item"><a class="page-link" href="#"
-					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-				</a></li>
+			<c:if test="${pageNo==-1}">
+				<li class="page-item"><a class="page-link" href="table?pageNo">Previous</a></li>
+				</c:if>
+					<c:if test="${pageNo==1}">
+				<li class="page-item"><a class="page-link" href="table?pageNo">1</a></li></c:if>
+				
+				<c:if test="${pageNo==2}">
+				<li class="page-item"><a class="page-link" href="table?pageNo">2</a></li></c:if>
+				
+					<c:if test="${pageNo==3}">
+				<li class="page-item"><a class="page-link" href="table?pageNo">3</a></li></c:if>
+				
+				<li class="page-item"><a class="page-link" href="table?pageNo">Next</a></li>
 			</ul>
 		</nav>
-		<br/>
 	</div>
 </body>
 </html>
